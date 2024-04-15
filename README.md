@@ -1,43 +1,21 @@
 # README #
 
-Readme for Groove Scribe
+A stripped down fork of https://github.com/montulli/GrooveScribe to embed drum
+sheet notation in [Notion](https://www.notion.so/).
 
-### What is this repository for? ###
+First, read
+[GrooveScribe README](https://github.com/montulli/GrooveScribe?tab=readme-ov-file#).
 
-* Groove Scribe is an HTML application for drummers.    Groove Scribe is a point and click authoring system to create drum sheet music as well as a practice tool for learning and practicing grooves and exercises.
+Changes:
 
-### How do I use it ###
+1. Make `GrooveEmbed.html` the default `index.html`.
 
-* Hosted here: http://www.mikeslessons.com/gscribe/
-* Also here: http://montulli.github.io/GrooveScribe/
+2. Remove included javascript related to MIDI, sounds, sharing, etc. You can
+still click on the notation to be linked to the full GrooveScribe page where
+you can edit the notation and play it.
 
-### How do I get set up? ###
+3. Add a HTML query string to display tempo and time signature with the
+notation. To use this, add `&EmbedTempoTimeSig=true` to the end of the URL.
 
-* Summary of set up:  Just host all the files on a web server.   The application runs entirely in the browser with Javascript, HTML & CSS.
-
-* Configuration: None
-
-* Dependencies
-    * Google's Leto font
-    * Google's url shortening api
-
-* Deployment instructions
-Deploy the files to an HTTP server.
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* File issues in github please:   https://github.com/montulli/GrooveScribe/issues
-* lou at montulli dot org is the admin and author.   He cannot answer every email, so please use good judgement before emailing.
-
-To edit this Readme:
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### See also ###
-
-* [SOURCE_CODE_README.md](SOURCE_CODE_README.md)
+4. An utility to convert a `https://www.mikeslessons.com/groove` link to an
+embeddable link.

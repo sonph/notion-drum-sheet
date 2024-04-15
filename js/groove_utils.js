@@ -1020,6 +1020,9 @@ function GrooveUtils() {
 		if (isNaN(myGrooveData.swingPercent) || myGrooveData.swingPercent < 0 || myGrooveData.swingPercent > 100)
 			myGrooveData.swingPercent = 0;
 
+		var stringVal = root.getQueryVariableFromString("embedTempoTimeSig", false, encodedURLData);
+		myGrooveData.embedTempoTimeSig = stringVal === "true" || stringVal === "True";
+
 		return myGrooveData;
 	};
 

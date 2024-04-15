@@ -54,64 +54,6 @@ if (typeof(GrooveDisplay) === "undefined") {
 			};
 		})();
 
-		root.checkloadjscssfile = function (filename, filetype) {
-			if (root.filesadded.indexOf("[" + filename + "]") == -1) {
-				root.loadjscssfile(filename, filetype);
-				root.filesadded += "[" + filename + "]"; //List of files added in the form "[filename1],[filename2],etc"
-			} else {
-				console.log("file already added!" + filename);
-			}
-		};
-
-		root.loadjscssfile = function (filename, filetype) {
-			if (filename[0] == ".") { // relative pathname
-				filename = root.getLocalScriptRoot() + filename;
-			}
-
-			if (root.filesadded.indexOf("[" + filename + "]") != -1)
-				return; // file already added
-
-			var fileref;
-			if (filetype == "js") { //if filename is a external JavaScript file
-				fileref = document.createElement('script');
-				fileref.setAttribute("type", "text/javascript");
-				fileref.setAttribute("src", filename);
-			} else if (filetype == "css") { //if filename is an external CSS file
-				fileref = document.createElement("link");
-				fileref.setAttribute("rel", "stylesheet");
-				fileref.setAttribute("type", "text/css");
-				fileref.setAttribute("href", filename);
-			}
-			if (typeof fileref != "undefined")
-				document.getElementsByTagName("head")[0].appendChild(fileref);
-		};
-
-		//	<!--   midi.js package for sound   -->
-		root.loadjscssfile("../MIDI.js/js/MIDI/AudioDetect.js", "js");
-		root.loadjscssfile("../MIDI.js/js/MIDI/LoadPlugin.js", "js");
-		root.loadjscssfile("../MIDI.js/js/MIDI/Plugin.js", "js");
-		root.loadjscssfile("../MIDI.js/js/MIDI/Player.js", "js");
-		root.loadjscssfile("../MIDI.js/inc/DOMLoader.XMLHttp.js", "js");
-		//	<!-- jasmid package midi package required by midi.js above -->
-		root.loadjscssfile("../MIDI.js/inc/jasmid/stream.js", "js");
-		root.loadjscssfile("../MIDI.js/inc/jasmid/midifile.js", "js");
-		root.loadjscssfile("../MIDI.js/inc/jasmid/replayer.js", "js");
-		//	<!-- extras -->
-		root.loadjscssfile("../MIDI.js/inc/Base64.js", "js");
-		root.loadjscssfile("../MIDI.js/inc/base64binary.js", "js");
-		//	<!-- jsmidgen -->
-		root.loadjscssfile("./jsmidgen.js", "js");
-		//	<!-- script to render ABC to an SVG image -->
-		root.loadjscssfile("./abc2svg-1.js", "js");
-
-		//	<!--   our custom JS  -->
-		root.loadjscssfile("./groove_utils.js", "js");
-
-		// stylesheet
-		root.loadjscssfile("https://fonts.googleapis.com/css?family=Lato:400,700,300", "css");
-		root.loadjscssfile("../font-awesome/4.3.0/css/font-awesome.min.css", "css");
-		root.loadjscssfile("../css/groove_display.css", "css");
-
 		root.GrooveDisplayUniqueCounter = 1;
 
 		// time signature looks like this  "4/4", "5/4", "6/8", etc
@@ -213,6 +155,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			var midiPlayerTargetId = "midiPlayerTarget" + root.GrooveDisplayUniqueCounter;
 
 			document.getElementById(HtmlTagId).innerHTML = '' +
+				'<span id="tempoTimeSig"></span>' +
 				'<div class="Printable"><div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div></div>\n' +
 				'<div class="nonPrintable"><div id="' + midiPlayerTargetId + '"></div></div>\n';
 
@@ -221,6 +164,10 @@ if (typeof(GrooveDisplay) === "undefined") {
 			// console.log(GrooveData);
 
 			var layoutFunction = function() {
+				var tempoTimeSig = document.getElementById("tempoTimeSig");
+				if (GrooveData.embedTempoTimeSig) {
+					tempoTimeSig.innerHTML = "&#9833; = " + GrooveData.tempo + " &nbsp;&nbsp; " + GrooveData.numBeats + "/" + GrooveData.noteValue;
+				}
 
 				var svgTarget = document.getElementById(svgTargetId);
 				// var renderWidth = svgTarget.offsetWidth;
@@ -231,7 +178,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 
 				if (linkToEditor)
-					svgTarget.innerHTML = '<a style="text-decoration: none" href="http://mikeslessons.com/gscribe/' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+					svgTarget.innerHTML = '<a target="_blank" style="text-decoration: none" href="http://mikeslessons.com/gscribe/' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
 				else
 					svgTarget.innerHTML = svgReturn.svg;
 			};
