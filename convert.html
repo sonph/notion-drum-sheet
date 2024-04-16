@@ -4,14 +4,28 @@
 <head>
   <title>Embedded Groove</title>
   <style>
+    body {
+      padding-top: 5%;
+      padding-left: 5%;
+    }
+
     input#url,
     input#convertedUrl {
-      width: 80%
+      padding-left: 10%;
     }
   </style>
 </head>
 
 <body>
+  <h3>Tool for converting a GrooveScribe drum notation for embedding in <a href="https://www.notion.so/"
+      target="_blank">
+      Notion</a>.</h3>
+  <div>
+    For how to use this tool, see demo at <a href="https://github.com/sonph/notion-drum-sheet"
+      target="_blank">https://github.com/sonph/notion-drum-sheet</a>
+  </div>
+  <br>
+  <br>
   <div>
     <form>
       <label for="url">URL:</label>
@@ -26,6 +40,7 @@
     </form>
   </div>
   <div></div>
+  <br>
   <div>
     <span id="status"></span>
   </div>
@@ -86,7 +101,7 @@
 
     // Convert and copy on "Enter". Also select on click.
     document.getElementById("url").addEventListener("keypress", convertAndCopyOnEnter);
-    document.getElementById("url").addEventListener("click", function() {
+    document.getElementById("url").addEventListener("click", function () {
       const url = document.getElementById("url").select();
     });
     document.getElementById("showTempo").addEventListener("keypress", convertAndCopyOnEnter);
