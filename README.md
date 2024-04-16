@@ -10,7 +10,7 @@ http://montulli.github.io/GrooveScribe/.
 The original GrooveScribe project source code is at
 https://github.com/montulli/GrooveScribe.
 
-#### How to use:
+### How to use:
 
 1. Transcribe your drum groove or fill at one of the URLs listed above.
 
@@ -21,11 +21,26 @@ to convert the URL to an embeddable link.
 
 4. Embed the link in Notion with `/embed` and pasting the link.
 
-#### Demo:
+5. Clicking on the notation will take you to the original GrooveScribe page
+where you can edit and play the groove or fill.
+
+<details>
+<summary>What does the "show tempo" box on the converter page do?</summary>
+Check the "show tempo" box if you want to show the tempo and time signature
+with the embedded notation.
+
+This is useful if you collect different grooves and fills at different tempos
+and time signatures.
+    
+Don't check it if the grooves and fills belong in the same song that plays at
+a consistent tempo.
+</details>
+
+### Demo:
 
 ![demo](./demo.gif)
 
-#### Changes:
+### Changes:
 
 1. Make `GrooveEmbed.html` the default `index.html`.
 
