@@ -18,4 +18,4 @@ you can edit the notation and play it.
 notation. To use this, add `&EmbedTempoTimeSig=true` to the end of the URL.
 
 4. An utility to convert a `https://www.mikeslessons.com/groove` link to an
-embeddable link.
+embeddable link: https://sonph.github.io/notion-drum-sheet/convert.html
