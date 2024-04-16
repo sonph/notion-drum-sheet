@@ -1,4 +1,4 @@
-# README #
+# Embedding Drum Notation in Notion
 
 A barebone fork of GrooveScribe for embedding drum sheet notation in
 [Notion](https://www.notion.so/).
@@ -10,7 +10,9 @@ http://montulli.github.io/GrooveScribe/.
 The original GrooveScribe project source code is at
 https://github.com/montulli/GrooveScribe.
 
-### How to use:
+![notion with drum notations](./notion-with-drum-notation.png)
+
+## How to use:
 
 1. Transcribe your drum groove or fill at one of the URLs listed above.
 
@@ -36,11 +38,9 @@ Don't check it if the grooves and fills belong in the same song that plays at
 a consistent tempo.
 </details>
 
-### Demo:
-
 ![demo](./demo.gif)
 
-### Changes:
+## Changes:
 
 1. Make `GrooveEmbed.html` the default `index.html`.
 
