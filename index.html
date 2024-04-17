@@ -10,7 +10,8 @@
     }
 
     input#url,
-    input#convertedUrl {
+    input#convertedUrl,
+    input#text {
       width: 70%;
     }
   </style>
@@ -30,10 +31,12 @@
     <form>
       <label for="url">URL:</label>
       <input type="text" id="url" name="url"><br><br>
+      <label for="text">Text:</label>
+      <input type="text" id="text" name="text"><br><br>
       <label for="showTempo">Show Tempo</label>
       <input type="checkbox" id="showTempo" name="showTempo"><br><br>
       <label for="convertedUrl">Converted URL:</label>
-      <input readonly type="text" id="convertedUrl" name="convertedUrl"><br><br>
+      <input type="text" id="convertedUrl" name="convertedUrl"><br><br>
       <button type="button" id="convertBtn">Convert</button>
       <button type="button" id="copyBtn">Convert & copy to clipboard</button>
       <button type="button" id="openLink">Open link</button>
@@ -67,12 +70,18 @@
         return;
       }
 
-      const showTempo = document.getElementById("showTempo").checked;
       const regex = /(https:\/\/)?(www\.)?(mikeslessons\.com|montulli\.github\.io)\/(groove\/|GrooveScribe\/)/;
       const target = "https://sonpham.me/notion-drum-sheet/render.html"
       var convertedUrl = url.replace(regex, target);
+
+      const showTempo = document.getElementById("showTempo").checked;
       if (showTempo) {
         convertedUrl = convertedUrl + "&EmbedTempoTimeSig=true";
+      }
+
+      const text = document.getElementById("text").value;
+      if (text.length > 0) {
+        convertedUrl += "&text=" + text;
       }
 
       const convertedUrlElement = document.getElementById("convertedUrl");

@@ -17,34 +17,68 @@
 
 	<script defer id="mainScript" src="./js/groove_display_utils.min.js"></script>
 	<script>
+		function parseQuery(queryString) {
+			var query = {};
+			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+			for (var i = 0; i < pairs.length; i++) {
+				var pair = pairs[i].split('=');
+				query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+			}
+			return query;
+		}
+
 		mainScript.addEventListener('load', function () {
 			// Refer to GrooveDisplay as e with minified JS.
 			e.AddGrooveDisplayToPage(
 				location.search, /* showPlayer= */ false, /* linkToEditor= */ true);
+
+			const textE = document.getElementById("text");
+			const text = parseQuery(window.location.search).text;
+			const tempoTimeSigE = document.getElementById("tempoTimeSig");
+
+			if (text !== undefined) {
+				textE.innerText = text;
+				textE.style.float = 'left';
+				tempoTimeSigE.style.float = 'right';
+			}
 		});
+
 	</script>
 	<style>
 		.Printable {
 			display: block;
 		}
-	
 		.nonPrintable {
 			display: block;
 		}
-	
 		.svgTarget {
 			width: 100%;
 		}
-	
 		.svgTarget svg {
 			width: 100%;
 			height: auto;
+		}
+		#tempoTimeSig {
+			margin-left: 5%;
+			margin-right: 5%;
+			float: 'left';
+		}
+		#text {
+			margin-left: 5%;
+			margin-left: 5%;
+		}
+		#topDiv {
+			width: 100%;
 		}
 	</style>
 </head>
 
 <body>
-	<span id="tempo"></span>
+	<div id="topDiv">
+		<span id="text"></span>
+		<span id="tempoTimeSig"></span>
+	</div>
+	<!-- groove displays here -->
 </body>
 
 </html>
