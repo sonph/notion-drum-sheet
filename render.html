@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Embeded Groove</title>
+
+	<script defer src="./js/abc2svg-1.js"></script>
+
+	<!-- <script defer id="mainScript" src="./js/groove_display.js"></script>
+				<script defer src="./js/groove_utils.js"></script>
+				<script>
+					mainScript.addEventListener('load', function () {
+						GrooveDisplay.AddGrooveDisplayToPage(
+							location.search, /* showPlayer= */ false, /* linkToEditor= */ true);
+					});
+				</script> -->
+
+	<script defer id="mainScript" src="./js/groove_display_utils.min.js"></script>
+	<script>
+		mainScript.addEventListener('load', function () {
+			// Refer to GrooveDisplay as e with minified JS.
+			e.AddGrooveDisplayToPage(
+				location.search, /* showPlayer= */ false, /* linkToEditor= */ true);
+		});
+	</script>
+
+	<link rel="stylesheet" href="./css/groove_display.css">
+
+</head>
+
+<body>
+	<span id="tempo"></span>
+</body>
+
+</html>

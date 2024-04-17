@@ -2,34 +2,114 @@
 <html>
 
 <head>
-	<title>Embeded Groove</title>
+  <title>Embedded Groove</title>
+  <style>
+    body {
+      padding-top: 5%;
+      padding-left: 5%;
+    }
 
-	<script defer src="./js/abc2svg-1.js"></script>
-
-	<!-- <script defer id="mainScript" src="./js/groove_display.js"></script>
-				<script defer src="./js/groove_utils.js"></script>
-				<script>
-					mainScript.addEventListener('load', function () {
-						GrooveDisplay.AddGrooveDisplayToPage(
-							location.search, /* showPlayer= */ false, /* linkToEditor= */ true);
-					});
-				</script> -->
-
-	<script defer id="mainScript" src="./js/groove_display_utils.min.js"></script>
-	<script>
-		mainScript.addEventListener('load', function () {
-			// Refer to GrooveDisplay as e with minified JS.
-			e.AddGrooveDisplayToPage(
-				location.search, /* showPlayer= */ false, /* linkToEditor= */ true);
-		});
-	</script>
-
-	<link rel="stylesheet" href="./css/groove_display.css">
-
+    input#url,
+    input#convertedUrl {
+      width: 70%;
+    }
+  </style>
 </head>
 
 <body>
-	<span id="tempo"></span>
+  <h3>Tool for converting a GrooveScribe drum notation for embedding in <a href="https://www.notion.so/"
+      target="_blank">
+      Notion</a>.</h3>
+  <div>
+    For how to use this tool, see demo at <a href="https://github.com/sonph/notion-drum-sheet"
+      target="_blank">https://github.com/sonph/notion-drum-sheet</a>
+  </div>
+  <br>
+  <br>
+  <div>
+    <form>
+      <label for="url">URL:</label>
+      <input type="text" id="url" name="url"><br><br>
+      <label for="showTempo">Show Tempo</label>
+      <input type="checkbox" id="showTempo" name="showTempo"><br><br>
+      <label for="convertedUrl">Converted URL:</label>
+      <input readonly type="text" id="convertedUrl" name="convertedUrl"><br><br>
+      <button type="button" id="convertBtn">Convert</button>
+      <button type="button" id="copyBtn">Convert & copy to clipboard</button>
+      <button type="button" id="openLink">Open link</button>
+    </form>
+  </div>
+  <div></div>
+  <br>
+  <div>
+    <span id="status"></span>
+  </div>
+
+  <script>
+    function convertAndCopyOnEnter(event) {
+      if (event.key === "Enter") {
+        convertAndCopy();
+      }
+    }
+
+    function setStatus(status) {
+      const statusE = document.getElementById("status");
+      statusE.innerHTML = "<b>" + status + "</b>";
+      setTimeout(function () {
+        statusE.innerHTML = "";
+      }, 2000 /* ms */);
+    }
+
+    function convert() {
+      const url = document.getElementById("url").value;
+      if (url.length == 0) {
+        setStatus("URL is empty!");
+        return;
+      }
+
+      const showTempo = document.getElementById("showTempo").checked;
+      const regex = /(https:\/\/)?(www\.)?(mikeslessons\.com|montulli\.github\.io)\/(groove\/|GrooveScribe\/)/;
+      const target = "https://sonpham.me/notion-drum-sheet/render.html"
+      var convertedUrl = url.replace(regex, target);
+      if (showTempo) {
+        convertedUrl = convertedUrl + "&EmbedTempoTimeSig=true";
+      }
+
+      const convertedUrlElement = document.getElementById("convertedUrl");
+      convertedUrlElement.value = convertedUrl;
+      convertedUrlElement.select();
+
+      setStatus("Converted!");
+    }
+
+    function convertAndCopy() {
+      convert();
+      const convertedUrlElement = document.getElementById("convertedUrl");
+      if (convertedUrlElement.value.length > 0) {
+        navigator.clipboard.writeText(convertedUrlElement.value);
+        setStatus("Copied!");
+        return;
+      }
+    }
+
+    function openLink() {
+      const convertedUrl = document.getElementById("convertedUrl").value;
+      if (convertedUrl.length > 0) {
+        window.open(convertedUrl, '_blank');
+      }
+    }
+
+    // Convert and copy on "Enter". Also select on click.
+    document.getElementById("url").addEventListener("keypress", convertAndCopyOnEnter);
+    document.getElementById("url").addEventListener("click", function () {
+      const url = document.getElementById("url").select();
+    });
+    document.getElementById("showTempo").addEventListener("keypress", convertAndCopyOnEnter);
+
+    document.getElementById("convertBtn").addEventListener("click", convert);
+    document.getElementById("copyBtn").addEventListener("click", convertAndCopy);
+    document.getElementById("openLink").addEventListener("click", openLink);
+  </script>
 </body>
 
 </html>
