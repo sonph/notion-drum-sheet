@@ -4,18 +4,11 @@
 <head>
 	<title>Embeded Groove</title>
 
-	<script defer src="./js/abc2svg-1.js"></script>
+	<script src="./js/abc2svg-1.js"></script>
+	<script src="./js/groove_utils.js"></script>
+	<script defer id="mainScript" src="./js/groove_display.js"></script>
 
-	<!-- <script defer id="mainScript" src="./js/groove_display.js"></script>
-				<script defer src="./js/groove_utils.js"></script>
-				<script>
-					mainScript.addEventListener('load', function () {
-						GrooveDisplay.AddGrooveDisplayToPage(
-							location.search, /* showPlayer= */ false, /* linkToEditor= */ true);
-					});
-				</script> -->
-
-	<script defer id="mainScript" src="./js/groove_display_utils.min.js"></script>
+	<!-- <script defer id="mainScript" src="./js/groove_display_utils.min.js"></script> -->
 	<script>
 		function parseQuery(queryString) {
 			var query = {};
@@ -28,9 +21,14 @@
 		}
 
 		mainScript.addEventListener('load', function () {
-			// Refer to GrooveDisplay as e with minified JS.
-			e.AddGrooveDisplayToPage(
-				location.search, /* showPlayer= */ false, /* linkToEditor= */ true);
+			var grooveDisplay = null;
+			if (typeof e !== 'undefined') {
+				// Refer to GrooveDisplay as e with minified JS.
+				grooveDisplay = e;
+			} else {
+				grooveDisplay = GrooveDisplay;
+			}
+			GrooveDisplay.AddGrooveDisplayToElementId(location.search, /* linkToEditor= */ true);
 
 			const textE = document.getElementById("text");
 			const text = parseQuery(window.location.search).text;
@@ -57,6 +55,7 @@
 		}
 		.svgTarget {
 			width: 100%;
+			display: inline-block;
 		}
 		.svgTarget svg {
 			width: 100%;
@@ -83,6 +82,11 @@
 		<span id="tempoTimeSig"></span>
 	</div>
 	<!-- groove displays here -->
+	<div id="GrooveDisplayId">
+		<div class="Printable">
+			<div id="svgTarget" class="svgTarget"></div>
+		</div>
+	</div>
 </body>
 
 </html>
