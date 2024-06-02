@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Test Render ABC</title>
+
+	<script src="./js/abc2svg-1.js"></script>
+	<script src="./js/groove_utils.js"></script>
+
+	<style>
+		body {
+			overflow: hidden; /* hide scrollbars */
+		}
+
+		.Printable {
+			display: block;
+		}
+		.nonPrintable {
+			display: block;
+		}
+		.svgTarget {
+			width: 100%;
+			display: inline-block;
+		}
+		.svgTarget svg {
+			width: 100%;
+			height: auto;
+		}
+		#tempoTimeSig {
+			margin-left: 5%;
+			margin-right: 5%;
+			float: 'left';
+		}
+		#text {
+			margin-left: 5%;
+			margin-left: 5%;
+		}
+		#topDiv {
+			width: 100%;
+		}
+	</style>
+</head>
+
+<body>
+  <div>
+    <textarea id="abcNotation" rows="30" cols="150"></textarea>
+    <br>
+    <button type="button" id="convertBtn">Render</button>
+  </div>
+	<div id="topDiv">
+		<span id="text"></span>
+		<span id="tempoTimeSig"></span>
+	</div>
+	<!-- groove displays here -->
+	<div id="GrooveDisplayId">
+		<div class="Printable">
+			<div id="svgTarget" class="svgTarget"></div>
+		</div>
+	</div>
+
+	<script>
+    function render() {
+      var abcNotation = document.getElementById("abcNotation").value;
+
+			var myGrooveUtils = new GrooveUtils();
+
+			var svgTarget = document.getElementById("svgTarget");
+			// var renderWidth = svgTarget.offsetWidth;
+			var renderWidth = 600;
+
+			var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
+
+			svgTarget.innerHTML = svgReturn.svg;
+    }
+    document.getElementById("convertBtn").addEventListener("click", render);
+	</script>
+</body>
+
+</html>
