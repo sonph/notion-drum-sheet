@@ -57,6 +57,8 @@
       <button type="button" id="convertBtn">Convert</button>
       <button type="button" id="copyBtn">Convert & copy to clipboard</button>
       <button type="button" id="openLink">Open link</button>
+      <br><br>
+      <button type="button" id="decodeUrlBtn">Decode converted URL</button>
     </form>
   </div>
   <div></div>
@@ -152,7 +154,7 @@
       }
     }
 
-    function parseQuery(str) {
+    function parseQuery(queryString) {
 			var query = {};
 			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
 			for (var i = 0; i < pairs.length; i++) {
@@ -162,8 +164,19 @@
 			return query;
     }
 
-    function decodeUrl() {
-      const query = parseQuery(window.location.search);
+    var dbg = {};
+
+    function decodeConvertedUrl() {
+      console.log("decoding");
+      const convertedUrl = document.getElementById("convertedUrl").value;
+      const query = parseQuery(convertedUrl.split("?")[1]);
+      dbg.query = query;
+      document.getElementById("showTempo").checked = (query.EmbedTempoTimeSig || "") === "true";
+      document.getElementById("subText").value = decodeURIComponent(query.subText || "");
+      document.getElementById("repeatBegins").value = query.RepeatBegins || "";
+      document.getElementById("repeatEnds").value = query.RepeatEnds || "";
+      document.getElementById("repeatEndings").value = query.RepeatEndings || "";
+      document.getElementById("measureText").value = encodeAfterLastColon(query.MeasureText || "", false);
     }
 
     function openLink() {
@@ -185,7 +198,7 @@
     document.getElementById("openLink").addEventListener("click", openLink);
 
     // Decode URL to allow for easy modification of groove without having to re-type all the custom fields
-    // document.getElementById("convertedUrl").addEventListener("onchange", decodeUrl);
+    document.getElementById("decodeUrlBtn").addEventListener("click", decodeConvertedUrl);
   </script>
 </body>
 
