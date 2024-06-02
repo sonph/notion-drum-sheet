@@ -131,7 +131,7 @@ class GrooveData {
 		this.repeatBegins = []
 		this.repeatEnds = []
 		this.repeatEndings = new Map()
-		this.text = new Map()
+		this.measureText = new Map()
 	}
 }
 
@@ -760,7 +760,7 @@ class GrooveUtils {
 		myGrooveData.repeatBegins = this.parseIntSet(this.getQueryVariableFromString("RepeatBegins", "", encodedURLData));
 		myGrooveData.repeatEnds = this.parseIntSet(this.getQueryVariableFromString("RepeatEnds", "", encodedURLData));
 		myGrooveData.repeatEndings = this.parseMeasureMapping(this.getQueryVariableFromString("RepeatEndings", "", encodedURLData));
-		myGrooveData.text = this.parseTextMapping(this.getQueryVariableFromString("Text", "", encodedURLData));
+		myGrooveData.measureText = this.parseTextMapping(this.getQueryVariableFromString("MeasureText", "", encodedURLData));
 
 		myGrooveData.debugMode = parseInt(this.getQueryVariableFromString("Debug", this.debugMode, encodedURLData), 10);
 
@@ -1239,8 +1239,8 @@ class GrooveUtils {
 					stickings_voice_string += "[" + repeatEndings.get(currentMeasure)
 					hh_snare_voice_string += "[" + repeatEndings.get(currentMeasure)
 				}
-				if (grooveData.text.has(currentMeasure) && grooveData.text.get(currentMeasure).begin) {
-					hh_snare_voice_string += "\"" + grooveData.text.get(currentMeasure).text + "\"";
+				if (grooveData.measureText.has(currentMeasure) && grooveData.measureText.get(currentMeasure).begin) {
+					hh_snare_voice_string += "\"" + grooveData.measureText.get(currentMeasure).text + "\"";
 				}
 			}
 
@@ -1430,8 +1430,8 @@ class GrooveUtils {
 			// add a bar line every measure
 			if (((i + 1) % (12 * timeSigTop * (4 / timeSigBottom))) === 0) {
 				kick_voice_string += "|";
-				if (grooveData.text.has(currentMeasure) && !grooveData.text.get(currentMeasure).begin) {
-					hh_snare_voice_string += "\"" + grooveData.text.get(currentMeasure).text + "\"";
+				if (grooveData.measureText.has(currentMeasure) && !grooveData.measureText.get(currentMeasure).begin) {
+					hh_snare_voice_string += "\"" + grooveData.measureText.get(currentMeasure).text + "\"";
 				}
 				if (repeatEnds.has(currentMeasure)) {
 					hh_snare_voice_string += ":|"
@@ -1525,8 +1525,8 @@ class GrooveUtils {
 					stickings_voice_string += "[" + repeatEndings.get(currentMeasure)
 					hh_snare_voice_string += "[" + repeatEndings.get(currentMeasure)
 				}
-				if (grooveData.text.has(currentMeasure) && grooveData.text.get(currentMeasure).begin) {
-					hh_snare_voice_string += "\"" + grooveData.text.get(currentMeasure).text + "\"";
+				if (grooveData.measureText.has(currentMeasure) && grooveData.measureText.get(currentMeasure).begin) {
+					hh_snare_voice_string += "\"" + grooveData.measureText.get(currentMeasure).text + "\"";
 				}
 			}
 
@@ -1581,8 +1581,8 @@ class GrooveUtils {
 
 			// add a bar line every measure.   32 notes in 4/4 time.   (32/timeSigBottom * timeSigTop)
 			if (((i + 1) % ((32 / timeSigBottom) * timeSigTop)) === 0) {
-				if (grooveData.text.has(currentMeasure) && !grooveData.text.get(currentMeasure).begin) {
-					hh_snare_voice_string += "\"" + grooveData.text.get(currentMeasure).text + "\"";
+				if (grooveData.measureText.has(currentMeasure) && !grooveData.measureText.get(currentMeasure).begin) {
+					hh_snare_voice_string += "\"" + grooveData.measureText.get(currentMeasure).text + "\"";
 				}
 				kick_voice_string += "|";
 				if (repeatEnds.has(currentMeasure)) {

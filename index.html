@@ -11,8 +11,9 @@
 
     input#url,
     input#convertedUrl,
-    input#text {
-      width: 70%;
+    input#subText,
+    input#measureText {
+      width: 90%;
     }
   </style>
 </head>
@@ -31,12 +32,28 @@
     <form>
       <label for="url">URL:</label>
       <input type="text" id="url" name="url"><br><br>
-      <label for="text">Text:</label>
-      <input type="text" id="text" name="text"><br><br>
+
+      <label for="subText">Sub Text:</label>
+      <input type="text" id="subText" name="subText" placeholder="chorus (8 bars)"><br><br>
+
+      <label for="repeatBegins">Begin repeat at measures (separated by ;):</label>
+      <input type="text" id="repeatBegins" name="repeatBegins" placeholder="1;3"><br><br>
+
+      <label for="repeatEnds">End repeat at measures (separated by ;):</label>
+      <input type="text" id="repeatEnds" name="repeatEnds" placeholder="2;4"><br><br>
+
+      <label for="repeatEndings">Alternate endings at measures (separated by ;):</label>
+      <input type="text" id="repeatEndings" name="repeatEndings" placeholder="2:1;3:2"><br><br>
+
+      <label for="measureText">Text at begin or end of measure (separated by ;):</label>
+      <input type="text" id="measureText" name="measureText" placeholder="1:b:start here;2:e:end here"><br><br>
+
       <label for="showTempo">Show Tempo</label>
       <input type="checkbox" id="showTempo" name="showTempo"><br><br>
+
       <label for="convertedUrl">Converted URL:</label>
       <input type="text" id="convertedUrl" name="convertedUrl"><br><br>
+
       <button type="button" id="convertBtn">Convert</button>
       <button type="button" id="copyBtn">Convert & copy to clipboard</button>
       <button type="button" id="openLink">Open link</button>
@@ -63,6 +80,15 @@
       }, 2000 /* ms */);
     }
 
+    function encodeAfterLastColon(str) {
+      return str.split(";").map(e => {
+          const parts = e.trim().split(":");
+          const encodedPart = encodeURIComponent(parts[parts.length - 1])
+          return parts.slice(0, parts.length - 1).concat([encodedPart]).join(":");
+        })
+        .join(";")
+    }
+
     function convert() {
       const url = document.getElementById("url").value;
       if (url.length == 0) {
@@ -79,9 +105,29 @@
         convertedUrl = convertedUrl + "&EmbedTempoTimeSig=true";
       }
 
-      const text = document.getElementById("text").value;
-      if (text.length > 0) {
-        convertedUrl += "&text=" + encodeURIComponent(text);
+      const subText = document.getElementById("subText").value;
+      if (subText.length > 0) {
+        convertedUrl += "&subText=" + encodeURIComponent(subText);
+      }
+
+      const repeatBegins = document.getElementById("repeatBegins").value;
+      if (repeatBegins.length > 0) {
+        convertedUrl += "&RepeatBegins=" + repeatBegins;
+      }
+
+      const repeatEnds = document.getElementById("repeatEnds").value;
+      if (repeatEnds.length > 0) {
+        convertedUrl += "&RepeatEnds=" + repeatEnds;
+      }
+
+      const repeatEndings = document.getElementById("repeatEndings").value;
+      if (repeatEndings.length > 0) {
+        convertedUrl += "&RepeatEndings=" + repeatEndings;
+      }
+
+      const measureText = document.getElementById("measureText").value;
+      if (measureText.length > 0) {
+        convertedUrl += "&MeasureText=" + encodeAfterLastColon(measureText);
       }
 
       const convertedUrlElement = document.getElementById("convertedUrl");
