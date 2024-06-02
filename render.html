@@ -30,8 +30,8 @@
 			}
 			GrooveDisplay.AddGrooveDisplayToElementId(location.search, /* linkToEditor= */ true);
 
-			const textE = document.getElementById("text");
-			const text = parseQuery(window.location.search).text;
+			const textE = document.getElementById("subText");
+			const text = parseQuery(window.location.search).subText;
 			const tempoTimeSigE = document.getElementById("tempoTimeSig");
 
 			if (text !== undefined) {
@@ -78,7 +78,7 @@
 
 <body>
 	<div id="topDiv">
-		<span id="text"></span>
+		<span id="subText"></span>
 		<span id="tempoTimeSig"></span>
 	</div>
 	<!-- groove displays here -->
