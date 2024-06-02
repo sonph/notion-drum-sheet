@@ -80,11 +80,16 @@
       }, 2000 /* ms */);
     }
 
-    function encodeAfterLastColon(str) {
+    function encodeAfterLastColon(str, /* bool */ encode) {
       return str.split(";").map(e => {
           const parts = e.trim().split(":");
-          const encodedPart = encodeURIComponent(parts[parts.length - 1])
-          return parts.slice(0, parts.length - 1).concat([encodedPart]).join(":");
+          var convertedPart;
+          if (encode) {
+            convertedPart = encodeURIComponent(parts[parts.length - 1]);
+          } else {
+            convertedPart = decodeURIComponent(parts[parts.length - 1]);
+          }
+          return parts.slice(0, parts.length - 1).concat([convertedPart]).join(":");
         })
         .join(";")
     }
@@ -127,7 +132,7 @@
 
       const measureText = document.getElementById("measureText").value;
       if (measureText.length > 0) {
-        convertedUrl += "&MeasureText=" + encodeAfterLastColon(measureText);
+        convertedUrl += "&MeasureText=" + encodeAfterLastColon(measureText, true);
       }
 
       const convertedUrlElement = document.getElementById("convertedUrl");
@@ -147,6 +152,20 @@
       }
     }
 
+    function parseQuery(str) {
+			var query = {};
+			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+			for (var i = 0; i < pairs.length; i++) {
+				var pair = pairs[i].split('=');
+				query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+			}
+			return query;
+    }
+
+    function decodeUrl() {
+      const query = parseQuery(window.location.search);
+    }
+
     function openLink() {
       const convertedUrl = document.getElementById("convertedUrl").value;
       if (convertedUrl.length > 0) {
@@ -164,6 +183,9 @@
     document.getElementById("convertBtn").addEventListener("click", convert);
     document.getElementById("copyBtn").addEventListener("click", convertAndCopy);
     document.getElementById("openLink").addEventListener("click", openLink);
+
+    // Decode URL to allow for easy modification of groove without having to re-type all the custom fields
+    // document.getElementById("convertedUrl").addEventListener("onchange", decodeUrl);
   </script>
 </body>
 
