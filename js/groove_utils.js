@@ -881,7 +881,7 @@ class GrooveUtils {
 			'%%ornament up\n' +
 			'%%pagewidth ' + renderWidth + 'px\n' +
 			'%%leftmargin 0cm\n' +
-			'%%rightmargin 0cm\n' +
+			'%%rightmargin 0.5cm\n' +
 			'%%topspace 10px\n' +
 			'%%titlefont calibri 20\n' +
 			'%%partsfont calibri 16\n' +
