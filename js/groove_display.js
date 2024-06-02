@@ -79,7 +79,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 			// load the groove from the URL data if it was passed in.
 			var grooveData = myGrooveUtils.getGrooveDataFromUrlString(grooveDefinition);
-			// console.log(GrooveData);
+			// console.log(grooveData);
 
 			var tempoTimeSig = document.getElementById("tempoTimeSig");
 			if (grooveData.embedTempoTimeSig) {
@@ -91,7 +91,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			var renderWidth = 600;
 
 			var abcNotation = myGrooveUtils.createABCFromGrooveData(grooveData, renderWidth);
-			// console.log(abcNotation);
+			console.log(abcNotation);
 			var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 
 			if (linkToEditor)

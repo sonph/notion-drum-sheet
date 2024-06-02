@@ -926,6 +926,28 @@ function GrooveUtils() {
 		return [timeSigTop, timeSigBottom];
 	};
 
+	root.parseIntSet = function(intSetStr) {
+		if (intSetStr === "") {
+			return new Set();
+		}
+		var split_arr = intSetStr.split(",");
+		return new Set(split_arr.map((i) => parseInt(i)))
+	}
+
+	root.parseIntMap = function(intMapStr) {
+		if (intMapStr === "") {
+			return new Map();
+		}
+		var split_arr = intMapStr.split(",");
+		var mapping = new Map();
+		split_arr.forEach(pair => {
+			// TODO(sonph): Handle errors.
+			var parts = pair.split(":");
+			mapping.set(parseInt(parts[0]), parseInt(parts[1]));
+		});
+		return mapping;
+	}
+
 	root.getGrooveDataFromUrlString = function (encodedURLData) {
 		var Stickings_string;
 		var HH_string;
@@ -934,6 +956,15 @@ function GrooveUtils() {
 		var stickings_set_from_URL = false;
 		var myGrooveData = new root.grooveDataNew();
 		var i;
+
+		// Custom add-on by @sonph
+		// Measure counts from 1.
+		// RepeatBegins: set of integers representing measures that we want to add begin repeat symbols.
+		// RepeatEnds: set of integers representing measures that we want to add begin end symbols.
+		// RepeatEndings: map of measure number to alternate ending (1, 2 ...)
+		myGrooveData.repeatBegins = this.parseIntSet(this.getQueryVariableFromString("RepeatBegins", "", encodedURLData));
+		myGrooveData.repeatEnds = this.parseIntSet(this.getQueryVariableFromString("RepeatEnds", "", encodedURLData));
+		myGrooveData.repeatEndings = this.parseIntMap(this.getQueryVariableFromString("RepeatEndings", "", encodedURLData));
 
 		myGrooveData.debugMode = parseInt(root.getQueryVariableFromString("Debug", root.debugMode, encodedURLData), 10);
 
@@ -1210,10 +1241,11 @@ function GrooveUtils() {
 		'%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
 		'%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n';
 
-		//if(kick_stems_up)
-		//fullABC += "%%staves (Stickings Hands)\n";
-		//else
-		fullABC += "%%staves (Stickings Hands Feet)\n";
+		if (kick_stems_up) {
+			fullABC += "%%staves (Stickings Hands)\n";
+		} else {
+			fullABC += "%%staves (Stickings Hands Feet)\n";
+		}
 
 		// print comments below the legend if there is one, otherwise in the header section
 		if (tuneComments !== "") {
@@ -1506,7 +1538,6 @@ function GrooveUtils() {
 	// takes 4 arrays 48 elements long that represent the stickings, snare, HH & kick.
 	// each element contains either the note value in ABC "F","^g" or false to represent off
 	// translates them to an ABC string (in 2 voices if !kick_stems_up)
-	// post_voice_abc is a string added to the end of each voice line that can end the line
 	//
 	// We output 48 notes in the ABC rather than the traditional 16 or 32 for 4/4 time.
 	// This is because of the stickings above the bar are a separate voice and should not have the "3" above them
@@ -1516,14 +1547,16 @@ function GrooveUtils() {
 																					snare_array,
 																					kick_array,
 																					toms_array,
-																					post_voice_abc,
 																					num_notes,
 																					sub_division,
 																					notes_per_measure,
 																					kick_stems_up,
 																					timeSigTop,
 																					timeSigBottom,
-																					numberOfMeasuresPerLine) {
+																					numberOfMeasuresPerLine,
+																					repeatBegins,
+																					repeatEnds,
+																					repeatEndings) {
 
 		var scaler = 1; // we are always in 48 notes here, and the ABC needs to think we are in 48 since the specified division is 1/32
 		var ABC_String = "";
@@ -1531,6 +1564,12 @@ function GrooveUtils() {
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n";
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";
 		var all_drum_array_of_array;
+		var currentMeasure = 1;
+		var addedBeginRepeatForThisMeasure = false;
+
+		// For repeats, for some reason we need to add |: and/or :| to all the
+		// voicings in order to get it to render. This means adding it to both the 
+		// sticking and hands voicings.
 
 		// console.log(HH_array);
 		// console.log(kick_array);
@@ -1550,6 +1589,23 @@ function GrooveUtils() {
 		var faker_sub_division = sub_division;
 
 		for (var i = 0; i < num_notes; i++) {
+			if (!addedBeginRepeatForThisMeasure) {
+				if (repeatEndings.has(currentMeasure) && repeatBegins.has(currentMeasure)) {
+					stickings_voice_string += "|:[" + repeatEndings.get(currentMeasure);
+					hh_snare_voice_string += "|:[" + repeatEndings.get(currentMeasure);
+					addedBeginRepeatForThisMeasure = true;
+				}
+				if (repeatBegins.has(currentMeasure)) {
+					stickings_voice_string += "|:"
+					hh_snare_voice_string += "|:"
+					addedBeginRepeatForThisMeasure = true;
+				}
+				if (repeatEndings.has(currentMeasure)) {
+					stickings_voice_string += "[" + repeatEndings.get(currentMeasure)
+					hh_snare_voice_string += "[" + repeatEndings.get(currentMeasure)
+					addedBeginRepeatForThisMeasure = true;
+				}
+			}
 
 			// triplets are special.  We want to output a note or a rest for every space of time
 			// 8th note triplets should always use rests
@@ -1736,9 +1792,18 @@ function GrooveUtils() {
 
 			// add a bar line every measure
 			if (((i + 1) % (12 * timeSigTop * (4/timeSigBottom))) === 0) {
-				stickings_voice_string += "|";
-				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
+				if (repeatEnds.has(currentMeasure)) {
+					hh_snare_voice_string += ":|"
+					stickings_voice_string += ":|";
+				} else {
+					hh_snare_voice_string += "|";
+					stickings_voice_string += "|";
+				}
+
+				// Next measure
+				currentMeasure += 1;
+				addedBeginRepeatForThisMeasure = false;
 
 				// add a line break every numberOfMeasuresPerLine measures
 				if (i < num_notes-1 && ((i + 1) % ((12 * timeSigTop * (4/timeSigBottom)) * numberOfMeasuresPerLine)) === 0) {
@@ -1749,10 +1814,14 @@ function GrooveUtils() {
 			}
 		}
 
+		stickings_voice_string += stickings_voice_string.endsWith("|") ? "\n" : "|\n";
+		hh_snare_voice_string += hh_snare_voice_string.endsWith("|") ? "\n" : "|\n";
+		kick_voice_string += kick_voice_string.endsWith("|") ? "\n" : "|\n";
+
 		if (kick_stems_up)
-			ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc;
+			ABC_String += stickings_voice_string + hh_snare_voice_string;
 		else
-			ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
+			ABC_String += stickings_voice_string + hh_snare_voice_string + kick_voice_string;
 
 		return ABC_String;
 	}
@@ -1760,21 +1829,22 @@ function GrooveUtils() {
 	// takes 4 arrays 32 elements long that represent the sticking, snare, HH & kick.
 	// each element contains either the note value in ABC "F","^g" or false to represent off
 	// translates them to an ABC string in 3 voices
-	// post_voice_abc is a string added to the end of each voice line that can end the line
 	//
 	function snare_HH_kick_ABC_for_quads(sticking_array,
 																			 HH_array,
 																			 snare_array,
 																			 kick_array,
 																			 toms_array,
-																			 post_voice_abc,
 																			 num_notes,
 																			 sub_division,
 																			 notes_per_measure,
 																			 kick_stems_up,
 																			 timeSigTop,
 																			 timeSigBottom,
-																			 numberOfMeasuresPerLine) {
+																			 numberOfMeasuresPerLine,
+																			 repeatBegins,
+																			 repeatEnds,
+																			 repeatEndings) {
 
 		var scaler = 1; // we are always in 32ths notes here
 		var ABC_String = "";
@@ -1782,6 +1852,12 @@ function GrooveUtils() {
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n"; // for hh and snare
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n"; // for kick drum
 		var all_drum_array_of_array;
+		var currentMeasure = 1;
+		var addedBeginRepeatForThisMeasure = false;
+
+		// For repeats, for some reason we need to add |: and/or :| to all the
+		// voicings in order to get it to render. This means adding it to both the 
+		// sticking and hands voicings.
 
 		all_drum_array_of_array = [snare_array, HH_array];  // exclude the kick
 		if(toms_array)
@@ -1793,6 +1869,23 @@ function GrooveUtils() {
       all_drum_array_of_array = all_drum_array_of_array.concat([kick_array]);
 
 		for (var i = 0; i < num_notes; i++) {
+			if (!addedBeginRepeatForThisMeasure) {
+				if (repeatEndings.has(currentMeasure) && repeatBegins.has(currentMeasure)) {
+					stickings_voice_string += "|:[" + repeatEndings.get(currentMeasure);
+					hh_snare_voice_string += "|:[" + repeatEndings.get(currentMeasure);
+					addedBeginRepeatForThisMeasure = true;
+				}
+				if (repeatBegins.has(currentMeasure)) {
+					stickings_voice_string += "|:"
+					hh_snare_voice_string += "|:"
+					addedBeginRepeatForThisMeasure = true;
+				}
+				if (repeatEndings.has(currentMeasure)) {
+					stickings_voice_string += "[" + repeatEndings.get(currentMeasure)
+					hh_snare_voice_string += "[" + repeatEndings.get(currentMeasure)
+					addedBeginRepeatForThisMeasure = true;
+				}
+			}
 
 			var grouping_size_for_rests = abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 			// make sure the group end doesn't go beyond the measure.   Happens in odd time sigs
@@ -1845,9 +1938,18 @@ function GrooveUtils() {
 
 			// add a bar line every measure.   32 notes in 4/4 time.   (32/timeSigBottom * timeSigTop)
 			if (((i + 1) % ((32/timeSigBottom) * timeSigTop)) === 0) {
-				stickings_voice_string += "|";
-				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
+				if (repeatEnds.has(currentMeasure)) {
+					hh_snare_voice_string += ":|"
+					stickings_voice_string += ":|";
+				} else {
+					hh_snare_voice_string += "|";
+					stickings_voice_string += "|";
+				}
+
+				// Next measure
+				currentMeasure += 1;
+				addedBeginRepeatForThisMeasure = false;
 			}
 			// add a line break every numberOfMeasuresPerLine measures, except the last
 			if (i < num_notes-1 && ((i + 1) % ((32/timeSigBottom) * timeSigTop * numberOfMeasuresPerLine)) === 0) {
@@ -1857,10 +1959,14 @@ function GrooveUtils() {
 			}
 		}
 
+		stickings_voice_string += stickings_voice_string.endsWith("|") ? "\n" : "|\n";
+		hh_snare_voice_string += hh_snare_voice_string.endsWith("|") ? "\n" : "|\n";
+		kick_voice_string += kick_voice_string.endsWith("|") ? "\n" : "|\n";
+
 		if (kick_stems_up)
-			ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc;
+			ABC_String += stickings_voice_string + hh_snare_voice_string;
 		else
-			ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
+			ABC_String += stickings_voice_string + hh_snare_voice_string + kick_voice_string;
 
 		return ABC_String;
 	}
@@ -1984,13 +2090,15 @@ function GrooveUtils() {
 																												snare_array,
 																												kick_array,
 																												toms_array,
-																												post_voice_abc,
 																												num_notes,
 																												time_division,
 																												notes_per_measure,
 																												kick_stems_up,
 																												timeSigTop,
-																												timeSigBottom) {
+																												timeSigBottom,
+																												repeatBegins,
+																												repeatEnds,
+																												repeatEndings) {
 
 		// convert sticking count symbol to the actual count
 		// do this right before ABC output so it can't every get encoded into something that gets saved.
@@ -2009,28 +2117,32 @@ function GrooveUtils() {
 																						snare_array,
 																						kick_array,
 																						toms_array,
-																						post_voice_abc,
 																						num_notes,
 																						time_division,
 																						notes_per_measure,
 																						kick_stems_up,
 																						timeSigTop,
 																						timeSigBottom,
-																						numberOfMeasuresPerLine);
+																						numberOfMeasuresPerLine,
+																						repeatBegins,
+																						repeatEnds,
+																						repeatEndings);
 		} else {
 			return snare_HH_kick_ABC_for_quads(sticking_array,
 																				 HH_array,
 																				 snare_array,
 																				 kick_array,
 																				 toms_array,
-																				 post_voice_abc,
 																				 num_notes,
 																				 time_division,
 																				 notes_per_measure,
 																				 kick_stems_up,
 																				 timeSigTop,
 																				 timeSigBottom,
-																				 numberOfMeasuresPerLine);
+																				 numberOfMeasuresPerLine,
+																				 repeatBegins,
+																				 repeatEnds,
+																				 repeatEndings);
 		}
 	}
 
@@ -2067,13 +2179,16 @@ function GrooveUtils() {
 			FullNoteSnareArray,
 			FullNoteKickArray,
 			FullNoteTomsArray,
-			"|\n",
 			FullNoteHHArray.length,
 			myGrooveData.timeDivision,
 			root.notesPerMeasureInFullSizeArray(is_triplet_division, myGrooveData.numBeats, myGrooveData.noteValue), // notes_per_measure, We scaled up to 48/32 above
 			myGrooveData.kickStemsUp,
 			myGrooveData.numBeats,
-			myGrooveData.noteValue);
+			myGrooveData.noteValue,
+			myGrooveData.repeatBegins,
+			myGrooveData.repeatEnds,
+			myGrooveData.repeatEndings,
+		);
 
 		root.note_mapping_array = root.create_note_mapping_array_for_highlighting(FullNoteHHArray,
 				FullNoteSnareArray,
