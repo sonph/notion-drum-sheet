@@ -18,7 +18,7 @@ https://github.com/montulli/GrooveScribe.
 
 2. Copy the link.
 
-3. Use the [converter](https://sonph.github.io/notion-drum-sheet/convert.html)
+3. Use the [converter](https://sonph.github.io/notion-drum-sheet/index.html)
 to convert the URL to an embeddable link.
 
 4. Embed the link in Notion with `/embed` and pasting the link.
