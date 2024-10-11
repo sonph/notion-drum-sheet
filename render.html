@@ -34,10 +34,14 @@
 			const text = parseQuery(window.location.search).subText;
 			const tempoTimeSigE = document.getElementById("tempoTimeSig");
 
-			if (text !== undefined) {
+			const embedTempoTimeSig = parseQuery(window.location.search).EmbedTempoTimeSig;
+			if (text === undefined && embedTempoTimeSig === undefined) {
+				document.getElementById("topDiv").remove();
+			} else if (text !== undefined) {
 				textE.innerText = text;
 				textE.style.float = 'left';
 				tempoTimeSigE.style.float = 'right';
+				// TempoTimeSig element content is set from groove_display.js.
 			}
 		});
 
