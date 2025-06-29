@@ -3,28 +3,31 @@
 A barebone fork of GrooveScribe for embedding drum sheet notation in
 [Notion](https://www.notion.so/).
 
+**GrooveScribe**
 GrooveScribe is a visual tool for musicians to annotate their drum grooves and
-fills. It is accessible at https://www.mikeslessons.com/gscribe or
-http://montulli.github.io/GrooveScribe/.
-
-The original GrooveScribe project source code is at
-https://github.com/montulli/GrooveScribe.
+fills.
 
 ![notion with drum notations](./github-assets/notion-with-drum-notation.png)
 
 ## How to use:
 
-1. Transcribe your drum groove or fill at one of the URLs listed above.
+1. Go to https://montulli.github.io/GrooveScribe or https://sonph.github.io/GrooveScribe and transcribe your drum groove or fill.
 
-2. Copy the link.
+2. Copy the URL.
 
 3. Use the [converter](https://sonph.github.io/notion-drum-sheet/index.html)
-to convert the URL to an embeddable link.
+to convert the copied URL into an embeddable link. Copy this converted link.
 
-4. Embed the link in Notion with `/embed` and pasting the link.
+4. In Notion, insert an embed block with `/embed` then paste the link.
 
-5. Clicking on the notation will take you to the original GrooveScribe page
-where you can edit and play the groove or fill.
+Clicking on the embedded notation will take you to the original GrooveScribe page
+where you can edit and play it.
+
+## Demo
+
+![demo](./github-assets/demo.gif)
+
+## FAQ
 
 <details>
 <summary>What does the "show tempo" box on the converter page do?</summary>
@@ -37,8 +40,6 @@ and time signatures.
 Don't check it if the grooves and fills belong in the same song that plays at
 a consistent tempo.
 </details>
-
-![demo](./github-assets/demo.gif)
 
 ## Changes:
 
@@ -53,3 +54,13 @@ embeddable link: https://sonpham.me/notion-drum-sheet.
 
 4. Add a HTML query string to display tempo and time signature with the
 notation. To use this, add `&EmbedTempoTimeSig=true` to the end of the URL.
+
+## Development
+
+1. Start a Python server:
+
+```
+python3 -m http.server
+```
+
+2. In a browser, open http://localhost:8000/
