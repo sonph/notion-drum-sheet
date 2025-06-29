@@ -10,7 +10,7 @@ http://montulli.github.io/GrooveScribe/.
 The original GrooveScribe project source code is at
 https://github.com/montulli/GrooveScribe.
 
-![notion with drum notations](./notion-with-drum-notation.png)
+![notion with drum notations](./github-assets/notion-with-drum-notation.png)
 
 ## How to use:
 
@@ -38,7 +38,7 @@ Don't check it if the grooves and fills belong in the same song that plays at
 a consistent tempo.
 </details>
 
-![demo](./demo.gif)
+![demo](./github-assets/demo.gif)
 
 ## Changes:
 
