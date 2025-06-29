@@ -22,10 +22,6 @@
   <h3>Tool for converting a GrooveScribe drum notation for embedding in <a href="https://www.notion.so/"
       target="_blank">
       Notion</a>.</h3>
-  <div>
-    For how to use this tool, see demo at <a href="https://github.com/sonph/notion-drum-sheet"
-      target="_blank">https://github.com/sonph/notion-drum-sheet</a>
-  </div>
   <br>
   <br>
   <div>
@@ -70,11 +66,13 @@
   <div>
     <h4>How to use this tool:</h4>
     <ol>
-      <li>Go to <a href="https://sonph.github.io/GrooveScribe" target="_blank">https://sonph.github.io/GrooveScribe</a> and transcribe your drum groove or fill.</li>
+      <li>Transcribe your drum groove or fill at https://sonph.github.io/GrooveScribe or
+        https://montulli.github.io/GrooveScribe.</li>
       <li>Copy the URL.</li>
-      <li>Paste the copied URL into the above input field. Click Convert. Copy the converted link.</li>
+      <li>Paste the copied URL into the above input box. Click convert and copy the converted link.</li>
       <li>In Notion, insert an embed block with <code>/embed</code> then paste the link.</li>
-      <li>For more info, see <a href="https://github.com/sonph/notion-drum-sheet" target="_blank">https://github.com/sonph/notion-drum-sheet</a></li>
+      <li>For more info & demo, see <a href="https://github.com/sonph/notion-drum-sheet"
+          target="_blank">https://github.com/sonph/notion-drum-sheet</a></li>
     </ol>
   </div>
 
@@ -95,15 +93,15 @@
 
     function encodeAfterLastColon(str, /* bool */ encode) {
       return str.split(";").map(e => {
-          const parts = e.trim().split(":");
-          var convertedPart;
-          if (encode) {
-            convertedPart = encodeURIComponent(parts[parts.length - 1]);
-          } else {
-            convertedPart = decodeURIComponent(parts[parts.length - 1]);
-          }
-          return parts.slice(0, parts.length - 1).concat([convertedPart]).join(":");
-        })
+        const parts = e.trim().split(":");
+        var convertedPart;
+        if (encode) {
+          convertedPart = encodeURIComponent(parts[parts.length - 1]);
+        } else {
+          convertedPart = decodeURIComponent(parts[parts.length - 1]);
+        }
+        return parts.slice(0, parts.length - 1).concat([convertedPart]).join(":");
+      })
         .join(";")
     }
 
@@ -166,13 +164,13 @@
     }
 
     function parseQuery(queryString) {
-			var query = {};
-			var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
-			for (var i = 0; i < pairs.length; i++) {
-				var pair = pairs[i].split('=');
-				query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
-			}
-			return query;
+      var query = {};
+      var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+      for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+      }
+      return query;
     }
 
     var dbg = {};

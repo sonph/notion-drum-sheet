@@ -3,7 +3,6 @@
 A barebone fork of GrooveScribe for embedding drum sheet notation in
 [Notion](https://www.notion.so/).
 
-**GrooveScribe**
 GrooveScribe is a visual tool for musicians to annotate their drum grooves and
 fills.
 
@@ -11,14 +10,15 @@ fills.
 
 ## How to use:
 
-1. Go to https://montulli.github.io/GrooveScribe or https://sonph.github.io/GrooveScribe and transcribe your drum groove or fill.
+1. Go to the [converter](https://sonph.github.io/notion-drum-sheet/index.html) tool.
 
-2. Copy the URL.
+2. Transcribe your drum groove or fill at https://sonph.github.io/GrooveScribe or https://montulli.github.io/GrooveScribe.
 
-3. Use the [converter](https://sonph.github.io/notion-drum-sheet/index.html)
-to convert the copied URL into an embeddable link. Copy this converted link.
+3. Copy the GrooveScribe URL.
 
-4. In Notion, insert an embed block with `/embed` then paste the link.
+4. Back at the converter tool, paste the copied URL into the input box. Click convert and copy this converted link.
+
+5. In Notion, insert an embed block with `/embed` then paste the link.
 
 Clicking on the embedded notation will take you to the original GrooveScribe page
 where you can edit and play it.
