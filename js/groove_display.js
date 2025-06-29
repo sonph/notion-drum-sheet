@@ -95,7 +95,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 
 			if (linkToEditor)
-				svgTarget.innerHTML = '<a target="_blank" style="text-decoration: none" href="http://mikeslessons.com/gscribe/' + grooveDefinition + '">' + svgReturn.svg + '</a>';
+				svgTarget.innerHTML = '<a target="_blank" style="text-decoration: none" href="https://sonph.github.io/GrooveScribe/' + grooveDefinition + '">' + svgReturn.svg + '</a>';
 			else
 				svgTarget.innerHTML = svgReturn.svg;
 		};
